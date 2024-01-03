@@ -23,7 +23,6 @@ AB_OTA_PARTITIONS += \
     vbmeta \
     vbmeta_system \
     vendor \
-    vendor_dlkm \
     vendor_boot
 
 # Architecture
@@ -73,7 +72,6 @@ DEVICE_MATRIX_FILE := $(DEVICE_PATH)/hidl/compatibility_matrix.xml
 DEVICE_FRAMEWORK_COMPATIBILITY_MATRIX_FILE := \
     $(DEVICE_PATH)/hidl/vendor_framework_compatibility_matrix.xml \
     $(DEVICE_PATH)/hidl/xiaomi_framework_compatibility_matrix.xml \
-    vendor/lineage/device_framework_matrix.xml
 
 DEVICE_MANIFEST_FILE := \
     $(DEVICE_PATH)/hidl/manifest_lahaina.xml \
@@ -84,6 +82,9 @@ TARGET_INIT_VENDOR_LIB := //$(DEVICE_PATH):libinit_redwood
 TARGET_RECOVERY_DEVICE_MODULES := libinit_redwood
 
 # Kernel
+
+# TARGET_KERNEL_VERSION := 5.4.210
+
 BOARD_KERNEL_BASE := 0x00000000
 BOARD_KERNEL_IMAGE_NAME := Image
 BOARD_KERNEL_PAGESIZE := 4096
@@ -111,11 +112,23 @@ BOARD_KERNEL_CMDLINE += pcie_ports=compat
 BOARD_KERNEL_CMDLINE += iptable_raw.raw_before_defrag=1
 BOARD_KERNEL_CMDLINE += ip6table_raw.raw_before_defrag=1
 
+# Prebuilt Kernel
+TARGET_FORCE_PREBUILT_KERNEL := true
+BOARD_KERNEL_BINARIES := kernel
+BOARD_PREBUILT_DTBOIMAGE := $(DEVICE_PATH)-kernel/dtbo.img
+TARGET_PREBUILT_KERNEL := $(DEVICE_PATH)-kernel/kernel
+TARGET_PREBUILT_DTB := $(DEVICE_PATH)-kernel/dtb.img
+PRODUCT_COPY_FILES += \
+     $(DEVICE_PATH)-kernel/dtb.img:$(TARGET_COPY_OUT)/dtb.img \
+     $(DEVICE_PATH)-kernel/kernel:kernel \
+     $(call find-copy-subdir-files,*,$(DEVICE_PATH)-kernel/ramdisk/,$(TARGET_COPY_OUT_VENDOR_RAMDISK)/lib/modules) \
+     $(call find-copy-subdir-files,*,$(DEVICE_PATH)-kernel/vendor/,$(TARGET_COPY_OUT_VENDOR)/lib/modules)
+
 # Kernel modules
-BOOT_KERNEL_MODULES := \
-    goodix_core.ko \
-    xiaomi_touch.ko
-BOARD_VENDOR_RAMDISK_RECOVERY_KERNEL_MODULES_LOAD := $(BOOT_KERNEL_MODULES)
+#BOOT_KERNEL_MODULES := \
+#    goodix_core.ko \
+#    xiaomi_touch.ko
+#BOARD_VENDOR_RAMDISK_RECOVERY_KERNEL_MODULES_LOAD := $(BOOT_KERNEL_MODULES)
 
 # Partitions
 BOARD_FLASH_BLOCK_SIZE := 131072
@@ -127,7 +140,7 @@ BOARD_VENDOR_BOOTIMAGE_PARTITION_SIZE := 100663296
 BOARD_USES_METADATA_PARTITION := true
 
 BOARD_SUPER_PARTITION_GROUPS := qti_dynamic_partitions
-BOARD_QTI_DYNAMIC_PARTITIONS_PARTITION_LIST := odm product system system_ext vendor vendor_dlkm
+BOARD_QTI_DYNAMIC_PARTITIONS_PARTITION_LIST := odm product system system_ext vendor
 BOARD_QTI_DYNAMIC_PARTITIONS_SIZE := 9122611200 # BOARD_SUPER_PARTITION_SIZE - 4MB
 
 BOARD_ODMIMAGE_FILE_SYSTEM_TYPE := ext4
@@ -136,7 +149,6 @@ BOARD_SYSTEM_EXTIMAGE_FILE_SYSTEM_TYPE := ext4
 BOARD_SYSTEMIMAGE_FILE_SYSTEM_TYPE := ext4
 BOARD_USERDATAIMAGE_FILE_SYSTEM_TYPE := f2fs
 BOARD_VENDORIMAGE_FILE_SYSTEM_TYPE := ext4
-BOARD_VENDOR_DLKMIMAGE_FILE_SYSTEM_TYPE := ext4
 
 ifeq ($(WITH_GMS),true)
 BOARD_PRODUCTIMAGE_PARTITION_RESERVED_SIZE := 104857600
@@ -154,7 +166,6 @@ TARGET_COPY_OUT_PRODUCT := product
 TARGET_COPY_OUT_ODM := odm
 TARGET_COPY_OUT_SYSTEM_EXT := system_ext
 TARGET_COPY_OUT_VENDOR := vendor
-TARGET_COPY_OUT_VENDOR_DLKM := vendor_dlkm
 
 # Platform
 TARGET_BOARD_PLATFORM := lahaina
@@ -173,7 +184,7 @@ BOARD_USES_QCOM_HARDWARE := true
 
 # Recovery
 BOARD_INCLUDE_DTB_IN_BOOTIMG := true
-BOARD_MOVE_RECOVERY_RESOURCES_TO_VENDOR_BOOT := true
+BOARD_USES_RECOVERY_AS_BOOT := true
 TARGET_RECOVERY_FSTAB := $(DEVICE_PATH)/rootdir/etc/fstab.qcom
 TARGET_RECOVERY_PIXEL_FORMAT := "RGBX_8888"
 TARGET_USERIMAGES_USE_EXT4 := true
@@ -204,7 +215,7 @@ BOARD_AVB_VBMETA_SYSTEM_KEY_PATH := external/avb/test/data/testkey_rsa2048.pem
 BOARD_AVB_VBMETA_SYSTEM_ALGORITHM := SHA256_RSA2048
 BOARD_AVB_VBMETA_SYSTEM_ROLLBACK_INDEX := $(PLATFORM_SECURITY_PATCH_TIMESTAMP)
 BOARD_AVB_VBMETA_SYSTEM_ROLLBACK_INDEX_LOCATION := 1
-BOARD_MOVE_GSI_AVB_KEYS_TO_VENDOR_BOOT := true
+# BOARD_MOVE_GSI_AVB_KEYS_TO_VENDOR_BOOT := true
 
 # WiFi
 BOARD_WLAN_DEVICE := qcwcn
