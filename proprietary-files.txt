@@ -1343,6 +1343,7 @@ vendor/lib64/libtime_genoff.so
 # Touchscreen firmware
 vendor/firmware/goodix_cfg_group_m20.bin
 vendor/firmware/goodix_firmware_m20.bin
+vendor/firmware/focaltech_ts_fw_m20.bin
 
 # Trusted Execution Environment connector
 vendor/bin/hw/vendor.qti.hardware.qteeconnector@1.0-service
