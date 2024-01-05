@@ -5,6 +5,7 @@
 #
 
 DEVICE_PATH := device/xiaomi/redwood
+PB_KERNEL_PATH := kernel/prebuilts/xiaomi/redwood
 
 BUILD_BROKEN_ELF_PREBUILT_PRODUCT_COPY_FILES := true
 BUILD_BROKEN_DUP_RULES := true
@@ -115,19 +116,16 @@ BOARD_KERNEL_CMDLINE += ip6table_raw.raw_before_defrag=1
 # Prebuilt Kernel
 TARGET_FORCE_PREBUILT_KERNEL := true
 BOARD_KERNEL_BINARIES := kernel
-BOARD_PREBUILT_DTBOIMAGE := $(DEVICE_PATH)-kernel/dtbo.img
-TARGET_PREBUILT_KERNEL := $(DEVICE_PATH)-kernel/kernel
-TARGET_PREBUILT_DTB := $(DEVICE_PATH)-kernel/dtb.img
+BOARD_PREBUILT_DTBOIMAGE := $(PB_KERNEL_PATH)/dtbo.img
+TARGET_PREBUILT_KERNEL := $(PB_KERNEL_PATH)/kernel
+# dtb.img is in vendor_boot image
+TARGET_PREBUILT_DTB := $(PB_KERNEL_PATH)/dtb.img
 PRODUCT_COPY_FILES += \
-     $(DEVICE_PATH)-kernel/dtb.img:$(TARGET_COPY_OUT)/dtb.img \
-     $(DEVICE_PATH)-kernel/kernel:kernel \
-     $(call find-copy-subdir-files,*,$(DEVICE_PATH)-kernel/ramdisk/,$(TARGET_COPY_OUT_VENDOR_RAMDISK)/lib/modules) \
-     $(call find-copy-subdir-files,*,$(DEVICE_PATH)-kernel/vendor/,$(TARGET_COPY_OUT_VENDOR)/lib/modules)
+     $(PB_KERNEL_PATH)/dtb.img:$(TARGET_COPY_OUT)/dtb.img \
+     $(PB_KERNEL_PATH)/kernel:kernel \
+     $(call find-copy-subdir-files,*,$(PB_KERNEL_PATH)/vendor_ramdisk/,$(TARGET_COPY_OUT_VENDOR_RAMDISK)/lib/modules) \
+     $(call find-copy-subdir-files,*,$(PB_KERNEL_PATH)/vendor/,$(TARGET_COPY_OUT_VENDOR)/lib/modules)
 
-# Kernel modules
-#BOOT_KERNEL_MODULES := \
-#    goodix_core.ko \
-#    xiaomi_touch.ko
 #BOARD_VENDOR_RAMDISK_RECOVERY_KERNEL_MODULES_LOAD := $(BOOT_KERNEL_MODULES)
 
 # Partitions
