@@ -84,8 +84,6 @@ TARGET_RECOVERY_DEVICE_MODULES := libinit_redwood
 
 # Kernel
 
-# TARGET_KERNEL_VERSION := 5.4.210
-
 BOARD_KERNEL_BASE := 0x00000000
 BOARD_KERNEL_IMAGE_NAME := Image
 BOARD_KERNEL_PAGESIZE := 4096
@@ -125,8 +123,6 @@ PRODUCT_COPY_FILES += \
      $(PB_KERNEL_PATH)/kernel:kernel \
      $(call find-copy-subdir-files,*,$(PB_KERNEL_PATH)/vendor_ramdisk/,$(TARGET_COPY_OUT_VENDOR_RAMDISK)/lib/modules) \
      $(call find-copy-subdir-files,*,$(PB_KERNEL_PATH)/vendor/,$(TARGET_COPY_OUT_VENDOR)/lib/modules)
-
-#BOARD_VENDOR_RAMDISK_RECOVERY_KERNEL_MODULES_LOAD := $(BOOT_KERNEL_MODULES)
 
 # Partitions
 BOARD_FLASH_BLOCK_SIZE := 131072
